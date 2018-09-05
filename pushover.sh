@@ -137,7 +137,7 @@ do
 done
 
 if [ -z "${api_token}" ]; then
-	echo "-a|--api must be set"
+	echo "-t|--token must be set"
 	exit
 fi
 
