@@ -45,9 +45,9 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
 ```
 
 ## Configuration
-Configuration files can be placed in **/etc/default/pushover-config** or in the user's home directory at **$HOME/.pushover/pushover-config**. The options are processed in order of importance for location.
+Configuration files can be placed in **/etc/pushover/pushover-config** or in the user's home directory at **$HOME/.pushover/pushover-config**. The options are processed in order of importance for location.
 
-1) Options in /etc/default/pushover-config are processed first
+1) Options in /etc/pushover/pushover-config are processed first
 2) Options in $HOME/.pushover/pushover-config are processed next
 3) Command line arguments override all configuration values
 
