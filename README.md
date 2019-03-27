@@ -9,6 +9,7 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
   -t,  --token APIKEY        The pushover.net API Key for your application
   -u,  --user USERKEY        Your pushover.net user key
   -m,  --message MESSAGE     The message to send; supports HTML formatting
+  -a,  --attachment filename The Picture you want to send
   -T,  --title TITLE         Title of the message
   -d,  --device NAME         Comma seperated list of devices to receive message
   -U,  --url URL             URL to send with message
@@ -126,3 +127,8 @@ Send a simple "This is a test" message to all devices that uses the sound of a b
 pushover.sh -t token -u key -m "This is a test" -s bike
 ```
 
+Sends a simple "This is a test Pic" message to all devices and send the Picture with the message
+
+```
+pushover.sh -t token -u key -m "This is a test Pic" -a /path/to/pic.jpg
+```
