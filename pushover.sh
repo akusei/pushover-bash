@@ -1,21 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-HEADER_CONTENT_TYPE="Content-Type: application/x-www-form-urlencoded"
-API_URL="https://api.pushover.net/1/messages.json"
-CONFIG_FILE="pushover-config"
-DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
-USER_OVERRIDE="${HOME}/.pushover/${CONFIG_FILE}"
+set -o errexit
+set -o nounset
+
+readonly API_URL="https://api.pushover.net/1/messages.json"
+readonly CONFIG_FILE="pushover-config"
+readonly DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
+readonly USER_OVERRIDE="${HOME}/.pushover/${CONFIG_FILE}"
+
 
 showHelp()
 {
-        script=`basename "$0"`
-        echo "Send Pushover v1.0 scripted by Nathan Martini 20150925"
-	echo "Send Pushover v1.1 scripted by Tobias Koenig 20190327 -> Added Picture push"
+        local script=`basename "$0"`
+        echo "Send Pushover v1.2 scripted by Nathan Martini"
         echo "Push notifications to your Android, iOS, or desktop devices"
         echo
         echo "NOTE: This script requires an account at http://www.pushover.net"
         echo
-        echo "usage: ${script} <apikey> <userkey> <message> [options]"
+        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <-m|--message message> [options]"
         echo
         echo "  -t,  --token APIKEY        The pushover.net API Key for your application"
         echo "  -u,  --user USERKEY        Your pushover.net user key"
@@ -83,120 +85,118 @@ showHelp()
 curl --version > /dev/null 2>&1 || { echo "This script requires curl; aborting."; echo; exit 1; }
 
 if [ -f ${DEFAULT_CONFIG} ]; then
-        . ${DEFAULT_CONFIG}
+  source ${DEFAULT_CONFIG}
 fi
 if [ -f ${USER_OVERRIDE} ]; then
-        . ${USER_OVERRIDE}
+  source ${USER_OVERRIDE}
 fi
 
 while [ $# -gt 0 ]
 do
+  case "${1:-}" in
+    -t|--token)
+      api_token="${2:-}"
+      shift
+      ;;
 
-        case "$1" in
-        -t|--token)
-                api_token="$2"
-                shift
-                ;;
-        -u|--user)
-                user_key="$2"
-                shift
-                ;;
-        -m|--message)
-                message="$2"
-                shift
-                ;;
-        -a|--attachment)
-                attachment="$2"
-                shift
-                ;;
-        -T|--title)
-                title="$2"
-                shift
-                ;;
-        -d|--device)
-                device="$2"
-                shift
-                ;;
-        -U|--url)
-                url="$2"
-                shift
-                ;;
-        --url-title)
-                url_title="$2"
-                shift
-                ;;
-        -p|--priority)
-                priority="$2"
-                shift
-                ;;
-        -s|--sound)
-                sound="$2"
-                shift
-                ;;
-        -h|--help)
-                showHelp
-                exit
-                ;;
-        *)
-                ;;
-        esac
+    -u|--user)
+      user_key="${2:-}"
+      shift
+      ;;
 
-        shift
+    -m|--message)
+      message="${2:-}"
+      shift
+      ;;
 
+    -a|--attachment)
+      attachment="${2:-}"
+      shift
+      ;;
+
+    -T|--title)
+      title="${2:-}"
+      shift
+      ;;
+
+    -d|--device)
+      device="${2:-}"
+      shift
+      ;;
+
+    -U|--url)
+      url="${2:-}"
+      shift
+      ;;
+
+    --url-title)
+      url_title="${2:-}"
+      shift
+      ;;
+
+    -p|--priority)
+      priority="${2:-}"
+      shift
+      ;;
+
+    -s|--sound)
+      sound="${2:-}"
+      shift
+      ;;
+
+    -h|--help)
+      showHelp
+      exit
+      ;;
+
+    *)
+      ;;
+  esac
+
+  shift
 done
 
-if [ -z "${api_token}" ]; then
-        echo "-t|--token must be set"
-        exit
+
+if [ -z "${api_token:-}" ]; then
+  echo "-t|--token must be set"
+  exit 1
 fi
 
-if [ -z "${user_key}" ]; then
-        echo "-u|--user must be set"
-        exit
+if [ -z "${user_key:-}" ]; then
+  echo "-u|--user must be set"
+  exit 1
 fi
 
-if [ -z "${message}" ]; then
-        echo "-m|--message must be set"
-        exit
+if [ -z "${message:-}" ]; then
+  echo "-m|--message must be set"
+  exit 1
 fi
 
-#json is currently disabled on the server
+if [ ! -z "${attachment:-}" ] && [ ! -f "${attachment}" ]; then
+  echo "${attachment} not found"
+  exit 1
+fi
 
-#json='{"token":"'"$api_token"'","user":"'"$user_key"'","message":"'"$message"'"'
-#if [ "$device" ]; then json=${json}',"device":"'"$device"'"'; fi
-#if [ "$title" ]; then json=${json}',"title":"'"$title"'"'; fi
-#if [ "$url" ]; then json=${json}',"url":"'"$url"'"'; fi
-#if [ "$urlTitle" ]; then json=${json}',"url_title":"'"$url_title"'"'; fi
-#if [ "$priority" ]; then json=${json}',"priority":'$priority''; fi
-#if [ "$sound" ]; then json=${json}',"sound":"'"$sound"'"'; fi
-#json="${json}}"
+if [ -z "${attachment:-}" ]; then
+  json="{\"token\":\"${api_token}\",\"user\":\"${user_key}\",\"message\":\"${message}\""
+  if [ "${device:-}" ]; then json="${json},\"device\":\"${device}\""; fi
+  if [ "${title:-}" ]; then json="${json},\"title\":\"${title}\""; fi
+  if [ "${url:-}" ]; then json="${json},\"url\":\"${url}\""; fi
+  if [ "${url_title:-}" ]; then json="${json},\"url_title\":\"${url_title}\""; fi
+  if [ "${priority:-}" ]; then json="${json},\"priority\":${priority}"; fi
+  if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
+  json="${json}}"
 
-#echo "${json}"
-#curl -s -o /dev/null -X POST -H "${HEADER_CONTENT_TYPE}" -d "${json}" "${API_URL}" &> /dev/null
-
-if [ -z "${attachment}" ]; then
-echo "send as text messages"
-
-curl -s -o /dev/null -X POST -H "${HEADER_CONTENT_TYPE}" "${API_URL}" \
-                --data-urlencode "token=${api_token}" \
-                --data-urlencode "user=${user_key}" \
-                --data-urlencode "message=${message}" \
-                ${device:+ --data-urlencode "device=${device}"} \
-                ${title:+ --data-urlencode "title=${title}"} \
-                ${url:+ --data-urlencode "url=${url}"} \
-                ${urlTitle:+ --data-urlencode "url_title=${url_title}"} \
-                ${priority:+ --data-urlencode "priority=${priority}"} \
-                ${sound:+ --data-urlencode "sound=${sound}"} > /dev/null 2>&1
-
+  curl -s -o /dev/null -H "Content-Type: application/json" -d "${json}" "${API_URL}" > /dev/null 2>&1
 else
-echo "send as picture format"
-curl -s -o /dev/null \
-  --form-string "token=${api_token}" \
-  --form-string "user=${user_key}" \
-  --form-string "message=${message}" \
-  --form-string "device=${device}" \
-  --form-string "priority=${priority}" \
-  --form-string "sound=${sound}" \
-  -F "attachment=@${attachment}" \
-   "${API_URL}"> /dev/null 2>&1
+  curl -s -o /dev/null \
+    --form-string "token=${api_token}" \
+    --form-string "user=${user_key}" \
+    --form-string "message=${message}" \
+    --form "attachment=@${attachment}" \
+    ${priority:+ --form-string "priority=${priority}"} \
+    ${sound:+ --form-string "sound=${sound}"} \
+    ${device:+ --form-string "device=${device}"} \
+    ${title:+ --form-string "title=${title}"} \
+    "${API_URL}" > /dev/null 2>&1
 fi
