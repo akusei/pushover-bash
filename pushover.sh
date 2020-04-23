@@ -33,6 +33,8 @@ showHelp()
         echo "                                0 - normal priority"
         echo "                                1 - bypass the user's quiet hours"
         echo "                                2 - require confirmation from the user"
+        echo "  -E, --expire               Set expiration time for notifications with priority 2 (default 180)"
+		echo "  -R, --retry                Set retry period for notifications with priority 2 (default 30)"
         echo "  -s,  --sound SOUND         Notification sound to play with message"
         echo "                               pushover - Pushover (default)"
         echo "                               bike - Bike"
@@ -144,6 +146,16 @@ do
       shift
       ;;
 
+	-E|--expire)
+		expire="${2:-}"
+		shift
+		;;
+
+	-R|--retry)
+		retry="${2:-}"
+		shift
+		;;
+
     -h|--help)
       showHelp
       exit
@@ -156,6 +168,14 @@ do
   shift
 done
 
+if [ $priority -eq 2 ]; then
+	if [ -z "${expire:-}" ]; then
+		expire=181
+	fi
+	if [ -z "${retry:-}" ]; then
+		retry=30
+	fi
+fi
 
 if [ -z "${api_token:-}" ]; then
   echo "-t|--token must be set"
@@ -184,6 +204,8 @@ if [ -z "${attachment:-}" ]; then
   if [ "${url:-}" ]; then json="${json},\"url\":\"${url}\""; fi
   if [ "${url_title:-}" ]; then json="${json},\"url_title\":\"${url_title}\""; fi
   if [ "${priority:-}" ]; then json="${json},\"priority\":${priority}"; fi
+  if [ "${expire:-}" ]; then json="${json},\"expire\":${expire}"; fi
+  if [ "${retry:-}" ]; then json="${json},\"retry\":${retry}"; fi
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
