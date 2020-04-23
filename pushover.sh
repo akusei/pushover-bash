@@ -34,7 +34,7 @@ showHelp()
         echo "                                1 - bypass the user's quiet hours"
         echo "                                2 - require confirmation from the user"
         echo "  -E, --expire               Set expiration time for notifications with priority 2 (default 180)"
-		echo "  -R, --retry                Set retry period for notifications with priority 2 (default 30)"
+        echo "  -R, --retry                Set retry period for notifications with priority 2 (default 30)"
         echo "  -s,  --sound SOUND         Notification sound to play with message"
         echo "                               pushover - Pushover (default)"
         echo "                               bike - Bike"
@@ -146,15 +146,15 @@ do
       shift
       ;;
 
-	-E|--expire)
-		expire="${2:-}"
-		shift
-		;;
+    -E|--expire)
+        expire="${2:-}"
+        shift
+        ;;
 
-	-R|--retry)
-		retry="${2:-}"
-		shift
-		;;
+    -R|--retry)
+        retry="${2:-}"
+        shift
+        ;;
 
     -h|--help)
       showHelp
@@ -169,12 +169,12 @@ do
 done
 
 if [ $priority -eq 2 ]; then
-	if [ -z "${expire:-}" ]; then
-		expire=181
-	fi
-	if [ -z "${retry:-}" ]; then
-		retry=30
-	fi
+  if [ -z "${expire:-}" ]; then
+    expire=181
+  fi
+  if [ -z "${retry:-}" ]; then
+    retry=30
+  fi
 fi
 
 if [ -z "${api_token:-}" ]; then
