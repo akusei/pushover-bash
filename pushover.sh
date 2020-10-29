@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -7,7 +7,8 @@ readonly API_URL="https://api.pushover.net/1/messages.json"
 readonly CONFIG_FILE="pushover-config"
 readonly DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
 readonly USER_OVERRIDE="${HOME}/.pushover/${CONFIG_FILE}"
-
+readonly EXPIRE_DEFAULT=180
+readonly RETRY_DEFAULT=30
 
 showHelp()
 {
@@ -33,8 +34,8 @@ showHelp()
         echo "                                0 - normal priority"
         echo "                                1 - bypass the user's quiet hours"
         echo "                                2 - require confirmation from the user"
-        echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default 180)"
-        echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default 30)"
+        echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default ${EXPIRE_DEFAULT})"
+        echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default ${RETRY_DEFAULT})"
         echo "  -s,  --sound SOUND         Notification sound to play with message"
         echo "                               pushover - Pushover (default)"
         echo "                               bike - Bike"
@@ -170,10 +171,10 @@ done
 
 if [ $priority -eq 2 ]; then
   if [ -z "${expire:-}" ]; then
-    expire=181
+    expire=${EXPIRE_DEFAULT}
   fi
   if [ -z "${retry:-}" ]; then
-    retry=30
+    retry=${RETRY_DEFAULT}
   fi
 fi
 
