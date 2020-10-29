@@ -33,8 +33,8 @@ showHelp()
         echo "                                0 - normal priority"
         echo "                                1 - bypass the user's quiet hours"
         echo "                                2 - require confirmation from the user"
-        echo "  -E, --expire               Set expiration time for notifications with priority 2 (default 180)"
-        echo "  -R, --retry                Set retry period for notifications with priority 2 (default 30)"
+        echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default 180)"
+        echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default 30)"
         echo "  -s,  --sound SOUND         Notification sound to play with message"
         echo "                               pushover - Pushover (default)"
         echo "                               bike - Bike"
@@ -146,12 +146,12 @@ do
       shift
       ;;
 
-    -E|--expire)
+    -e|--expire)
         expire="${2:-}"
         shift
         ;;
 
-    -R|--retry)
+    -r|--retry)
         retry="${2:-}"
         shift
         ;;
