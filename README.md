@@ -20,6 +20,8 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
                                 0 - normal priority
                                 1 - bypass the user's quiet hours
                                 2 - require confirmation from the user
+  -e,  --expire SECONDS      Set expiration time for for notifications with priority 2 (default 180)
+  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default 30)
   -s,  --sound SOUND         Notification sound to play with message
                                pushover - Pushover (default)
                                bike - Bike
