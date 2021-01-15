@@ -9,6 +9,7 @@ readonly DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
 readonly USER_OVERRIDE="${HOME}/.pushover/${CONFIG_FILE}"
 readonly EXPIRE_DEFAULT=180
 readonly RETRY_DEFAULT=30
+HIDE_REPLY=true
 
 showHelp()
 {
@@ -59,6 +60,7 @@ showHelp()
         echo "                               echo - Pushover Echo (long)"
         echo "                               updown - Up Down (long)"
         echo "                               none - None (silent)"
+        echo "  -v,  --verbose             Return API execution reply to stdout"
         echo
         echo "EXAMPLES:"
         echo
@@ -148,14 +150,18 @@ do
       ;;
 
     -e|--expire)
-        expire="${2:-}"
-        shift
-        ;;
+      expire="${2:-}"
+      shift
+      ;;
 
     -r|--retry)
-        retry="${2:-}"
-        shift
-        ;;
+      retry="${2:-}"
+      shift
+      ;;
+
+    -v|--verbose)
+      unset HIDE_REPLY
+      ;;
 
     -h|--help)
       showHelp
@@ -210,9 +216,9 @@ if [ -z "${attachment:-}" ]; then
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  curl -s -o /dev/null -H "Content-Type: application/json" -d "${json}" "${API_URL}" > /dev/null 2>&1
+  curl -s ${HIDE_REPLY:+ -o /dev/null} -H "Content-Type: application/json" -d "${json}" "${API_URL}" ${HIDE_REPLY:+ > /dev/null} 2>&1
 else
-  curl -s -o /dev/null \
+  curl -s ${HIDE_REPLY:+ -o /dev/null} \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
@@ -221,5 +227,5 @@ else
     ${sound:+ --form-string "sound=${sound}"} \
     ${device:+ --form-string "device=${device}"} \
     ${title:+ --form-string "title=${title}"} \
-    "${API_URL}" > /dev/null 2>&1
+    "${API_URL}" ${HIDE_REPLY:+ > /dev/null} 2>&1
 fi
