@@ -175,12 +175,14 @@ do
   shift
 done
 
-if [ $priority -eq 2 ]; then
-  if [ -z "${expire:-}" ]; then
-    expire=${EXPIRE_DEFAULT}
-  fi
-  if [ -z "${retry:-}" ]; then
-    retry=${RETRY_DEFAULT}
+if [ ! -z "${priority:-}" ]; then
+  if [ $priority -eq 2 ]; then
+    if [ -z "${expire:-}" ]; then
+      expire=${EXPIRE_DEFAULT}
+    fi
+    if [ -z "${retry:-}" ]; then
+      retry=${RETRY_DEFAULT}
+    fi
   fi
 fi
 
