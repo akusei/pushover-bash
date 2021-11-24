@@ -29,6 +29,8 @@ showHelp()
         echo "  -d,  --device NAME         Comma seperated list of devices to receive message"
         echo "  -U,  --url URL             URL to send with message"
         echo "       --url-title URLTITLE  Title of the URL"
+        echo "  -H,  --html                Enable HTML formatting. monospace may not be used if html is used, and vice versa."
+        echo "  -M,  --monospace           Enable monospace messages. monospace may not be used if html is used, and vice versa."
         echo "  -p,  --priority PRIORITY   Priority of the message"
         echo "                               -2 - no notification/alert"
         echo "                               -1 - quiet notification"
@@ -139,6 +141,14 @@ do
       shift
       ;;
 
+    -H|--html)
+      html="1"
+      ;;
+
+    -M|--monospace)
+      monospace="1"
+      ;;
+
     -p|--priority)
       priority="${2:-}"
       shift
@@ -216,6 +226,8 @@ if [ -z "${attachment:-}" ]; then
   if [ "${expire:-}" ]; then json="${json},\"expire\":${expire}"; fi
   if [ "${retry:-}" ]; then json="${json},\"retry\":${retry}"; fi
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
+  if [ "${html:-}" ]; then json="${json},\"html\":\"${html}\""; fi
+  if [ "${monospace:-}" ]; then json="${json},\"monospace\":\"${monospace}\""; fi
   json="${json}}"
 
   curl -s ${HIDE_REPLY:+ -o /dev/null} -H "Content-Type: application/json" -d "${json}" "${API_URL}" ${HIDE_REPLY:+ > /dev/null} 2>&1
