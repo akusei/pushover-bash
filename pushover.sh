@@ -29,6 +29,8 @@ showHelp()
         echo "  -d,  --device NAME         Comma seperated list of devices to receive message"
         echo "  -U,  --url URL             URL to send with message"
         echo "       --url-title URLTITLE  Title of the URL"
+        echo "  -H,  --html                Enable HTML formatting, cannot be used with the --monospace flag"
+        echo "  -M,  --monospace           Enable monospace messages, cannot be used with the --html flag"
         echo "  -p,  --priority PRIORITY   Priority of the message"
         echo "                               -2 - no notification/alert"
         echo "                               -1 - quiet notification"
@@ -139,6 +141,14 @@ do
       shift
       ;;
 
+    -H|--html)
+      html=1
+      ;;
+
+    -M|--monospace)
+      monospace=1
+      ;;
+
     -p|--priority)
       priority="${2:-}"
       shift
@@ -175,7 +185,7 @@ do
   shift
 done
 
-if [ $priority -eq 2 ]; then
+if [ ${priority:-0} -eq 2 ]; then
   if [ -z "${expire:-}" ]; then
     expire=${EXPIRE_DEFAULT}
   fi
@@ -199,6 +209,11 @@ if [ -z "${message:-}" ]; then
   exit 1
 fi
 
+if [ ! -z "${html:-}" ] && [ ! -z "${monospace:-}" ]; then
+  echo "--html and --monospace are mutually exclusive"
+  exit 1
+fi
+
 if [ ! -z "${attachment:-}" ] && [ ! -f "${attachment}" ]; then
   echo "${attachment} not found"
   exit 1
@@ -210,22 +225,29 @@ if [ -z "${attachment:-}" ]; then
   if [ "${title:-}" ]; then json="${json},\"title\":\"${title}\""; fi
   if [ "${url:-}" ]; then json="${json},\"url\":\"${url}\""; fi
   if [ "${url_title:-}" ]; then json="${json},\"url_title\":\"${url_title}\""; fi
+  if [ "${html:-}" ]; then json="${json},\"html\":1"; fi
+  if [ "${monospace:-}" ]; then json="${json},\"monospace\":1"; fi
   if [ "${priority:-}" ]; then json="${json},\"priority\":${priority}"; fi
   if [ "${expire:-}" ]; then json="${json},\"expire\":${expire}"; fi
   if [ "${retry:-}" ]; then json="${json},\"retry\":${retry}"; fi
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  curl -s ${HIDE_REPLY:+ -o /dev/null} -H "Content-Type: application/json" -d "${json}" "${API_URL}" ${HIDE_REPLY:+ > /dev/null} 2>&1
+  curl -s ${HIDE_REPLY:+ -o /dev/null} \
+    -H "Content-Type: application/json" \
+    -d "${json}" \
+    "${API_URL}" 2>&1
 else
   curl -s ${HIDE_REPLY:+ -o /dev/null} \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
     --form "attachment=@${attachment}" \
+    ${html:+ --form-string "html=1"} \
+    ${monospace:+ --form-string "monospace=1"} \
     ${priority:+ --form-string "priority=${priority}"} \
     ${sound:+ --form-string "sound=${sound}"} \
     ${device:+ --form-string "device=${device}"} \
     ${title:+ --form-string "title=${title}"} \
-    "${API_URL}" ${HIDE_REPLY:+ > /dev/null} 2>&1
+    "${API_URL}" 2>&1
 fi
