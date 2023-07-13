@@ -1,0 +1,15 @@
+{
+    "name": "akusei/pushover-bash",
+    "description": "Pushover Bash Script",
+    "homepage": "https://github.com/akusei/pushover-bash",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "akusei",
+            "role": "Developer",
+            "homepage": "https://github.com/akusei"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

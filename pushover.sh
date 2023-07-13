@@ -7,9 +7,15 @@ readonly API_URL="https://api.pushover.net/1/messages.json"
 readonly CONFIG_FILE="pushover-config"
 readonly DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
 readonly USER_OVERRIDE=~/.pushover/${CONFIG_FILE}
+readonly COMPOSER_ROOT_PATH=`realpath ../../../`
+readonly USER_OVERRIDE_COMPOSER=${COMPOSER_ROOT_PATH}/${CONFIG_FILE}
 readonly EXPIRE_DEFAULT=180
 readonly RETRY_DEFAULT=30
 HIDE_REPLY=true
+
+echo ${COMPOSER_ROOT_PATH}
+exit 1
+
 
 showHelp()
 {
@@ -96,6 +102,9 @@ if [ -f ${DEFAULT_CONFIG} ]; then
 fi
 if [ -f ${USER_OVERRIDE} ]; then
   source ${USER_OVERRIDE}
+fi
+if [ -f ${USER_OVERRIDE_COMPOSER} ]; then
+  source ${USER_OVERRIDE_COMPOSER}
 fi
 
 while [ $# -gt 0 ]
