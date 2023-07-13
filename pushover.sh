@@ -13,10 +13,6 @@ readonly EXPIRE_DEFAULT=180
 readonly RETRY_DEFAULT=30
 HIDE_REPLY=true
 
-echo ${COMPOSER_ROOT_PATH}
-exit 1
-
-
 showHelp()
 {
         local script=`basename "$0"`
