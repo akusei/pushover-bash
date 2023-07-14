@@ -16,12 +16,33 @@ You can add and call it as a script in your composer.json file like so:
 ```json
 {
     "scripts": {
-        "pushover": "./vendor/bin/pushover $@"
+        "pushover": "./vendor/bin/pushover",
     }
 }
 ```
 
 Then call it through composer like so:
 ```bash
-composer pushover [script args]
+$composer pushover -- [script args]
+
+#example
+$composer pushover -- -m Message
+```
+
+You can also refer to it in `composer.json` like:
+```json
+{
+    "scripts": {
+        "pushover": "./vendor/bin/pushover",
+        "pushover-test": "@pushover -T Test -m Message Test",
+        "ci": [
+            "./vendor/bin/phpunit",
+            "@pushover -T UnitTest -m Unit-test-complete"
+        ],
+        "coverage": [
+            "php -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-html coverage --testdox",
+            "@pushover -T PROJECT-COVERAGE -m COVERAGE-is-done"
+        ],
+    }
+}
 ```
