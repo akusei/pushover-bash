@@ -31,7 +31,9 @@ $composer pushover -- -m Message
 
 You can also refer to it in `composer.json` like:
 
-**Known Limitation:** With the wat the current bash script is written, when you call `composer pushover-test` like below, there can be no spaces in the title and message, or it will only pass the first word; hence the dashes in the title and message below
+### Current Known Limitations
+
+With the wat the current bash script is written, when you call `composer pushover-test` like below, there can be no spaces in the title and message, or it will only pass the first word; hence the dashes in the title and message below
 
 ```json
 {
