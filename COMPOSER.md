@@ -30,14 +30,17 @@ $composer pushover -- -m Message
 ```
 
 You can also refer to it in `composer.json` like:
+
+**Known Limitation:** With the wat the current bash script is written, when you call `composer pushover-test` like below, there can be no spaces in the title and message, or it will only pass the first word; hence the dashes in the title and message below
+
 ```json
 {
     "scripts": {
         "pushover": "./vendor/bin/pushover",
-        "pushover-test": "@pushover -T Test -m Message Test",
+        "pushover-test": "@pushover -T Test -m Message-Test",
         "ci": [
             "./vendor/bin/phpunit",
-            "@pushover -T UnitTest -m Unit-test-complete"
+            "@pushover -T Unit-Test -m Unit-test-complete"
         ],
         "coverage": [
             "php -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-html coverage --testdox",

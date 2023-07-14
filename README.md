@@ -86,6 +86,9 @@ If I want to override only **title** for a specific user, the configuration in $
 title="title for specific user"
 ```
 
+## Support
+For PHP Composer based projects, see [COMPOSER.md](COMPOSER.md)
+
 ## Examples
 Send a simple "This is a test" message to all devices using the stored configuration in either **/etc/default/pushover-config** or **$HOME/.pushover/pushover-config**
 
