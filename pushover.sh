@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+failure() {
+  local lineno=$1
+  local msg=$2
+  echo "Failed at $lineno: $msg"
+}
+trap 'failure ${LINENO} "$BASH_COMMAND"' ERR
+
 set -o errexit
 set -o nounset
 
