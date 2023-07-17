@@ -103,91 +103,101 @@ if [ -f ${USER_OVERRIDE_COMPOSER} ]; then
   source ${USER_OVERRIDE_COMPOSER}
 fi
 
+declare -A myargs
+varname=''
+
 while [ $# -gt 0 ]
 do
-  case "${1:-}" in
-    -t|--token)
-      api_token="${2:-}"
-      shift
-      ;;
+  if [ ${1:0:1} = '-' ]; then
+    case "${1:-}" in
+      -t|--token)
+        varname='api_token'
+        ;;
 
-    -u|--user)
-      user_key="${2:-}"
-      shift
-      ;;
+      -u|--user)
+        varname='user_key'
+        ;;
 
-    -m|--message)
-      message="${2:-}"
-      shift
-      ;;
+      -m|--message)
+        varname='message'
+        ;;
 
-    -a|--attachment)
-      attachment="${2:-}"
-      shift
-      ;;
+      -a|--attachment)
+        varname='attachment'
+        ;;
 
-    -T|--title)
-      title="${2:-}"
-      shift
-      ;;
+      -T|--title)
+        varname='title'
+        ;;
 
-    -d|--device)
-      device="${2:-}"
-      shift
-      ;;
+      -d|--device)
+        varname='device'
+        ;;
 
-    -U|--url)
-      url="${2:-}"
-      shift
-      ;;
+      -U|--url)
+        varname='url'
+        ;;
 
-    --url-title)
-      url_title="${2:-}"
-      shift
-      ;;
+      --url-title)
+        varname='url_title'
+        ;;
 
-    -H|--html)
-      html=1
-      ;;
+      -H|--html)
+        varname=''
+        html=1
+        ;;
 
-    -M|--monospace)
-      monospace=1
-      ;;
+      -M|--monospace)
+        varname=''
+        monospace=1
+        ;;
 
-    -p|--priority)
-      priority="${2:-}"
-      shift
-      ;;
+      -p|--priority)
+        varname='priority'
+        ;;
 
-    -s|--sound)
-      sound="${2:-}"
-      shift
-      ;;
+      -s|--sound)
+        varname='sound'
+        ;;
 
-    -e|--expire)
-      expire="${2:-}"
-      shift
-      ;;
+      -e|--expire)
+        varname='expire'
+        ;;
 
-    -r|--retry)
-      retry="${2:-}"
-      shift
-      ;;
+      -r|--retry)
+        varname='retry'
+        ;;
 
-    -v|--verbose)
-      unset HIDE_REPLY
-      ;;
+      -v|--verbose)
+        varname=''
+        unset HIDE_REPLY
+        ;;
 
-    -h|--help)
-      showHelp
-      exit
-      ;;
+      -h|--help)
+        showHelp
+        exit
+        ;;
 
-    *)
-      ;;
-  esac
-
+      *)
+        ;;
+    esac
+  fi
+  if [ -n "${varname}" ]; then
+    if [[ ! -v "myargs[${varname}]" ]] ; then
+      myargs[${varname}]=''
+    fi
+    if [ ${1:0:1} != '-' ]; then
+      myargs[${varname}]="${myargs[${varname}]} ${1}"
+    fi
+  fi
   shift
+done
+
+for i in "${!myargs[@]}"
+do
+  # yes, i know eval is bad, but i'm not a bash guru.
+  # if you have a better way, let me know.
+  eval "${i}"='${myargs[$i]}'
 done
 
 if [ ${priority:-0} -eq 2 ]; then
