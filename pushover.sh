@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "HERE"
+exit 1
+
 set -o errexit
 set -o nounset
 

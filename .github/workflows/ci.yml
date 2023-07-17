@@ -29,7 +29,7 @@ jobs:
       shell: bash
       run: |
         cp ./pushover-config-test ./pushover-config
-        sed -i "s#__PUSHOVER_USER__#${{ secrets.PUSHOVER_USER }} #g" ./pushover-config
-        sed -i "s#__PUSHOVER_APP__#${{ secrets.PUSHOVER_APP }} #g" ./pushover-config
-        sed -i "s#__PUSHOVER_DEVICE__#${{ secrets.PUSHOVER_DEVICE }} #g" ./pushover-config
+        sed -i "s#__PUSHOVER_USER__#${{ secrets.PUSHOVER_USER }}#g" ./pushover-config
+        sed -i "s#__PUSHOVER_APP__#${{ secrets.PUSHOVER_APP }}#g" ./pushover-config
+        sed -i "s#__PUSHOVER_DEVICE__#${{ secrets.PUSHOVER_DEVICE }}#g" ./pushover-config
         ./pushover.sh -T Github Action Config -m Github Action Message
