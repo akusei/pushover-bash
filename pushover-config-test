@@ -1,0 +1,8 @@
+api_token=__PUSHOVER_APP__
+user_key=__PUSHOVER_USER__
+device=__PUSHOVER_DEVICE__
+url=
+url_title=
+priority=0
+title=
+sound=
