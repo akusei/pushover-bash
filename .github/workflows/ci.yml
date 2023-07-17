@@ -23,7 +23,7 @@ jobs:
 
     - name: Run script with Args
       shell: bash
-      run: ./pushover.sh -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Title -m Github Action Message
+      run: ./pushover.sh -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Message
 
     - name: Run script from config
       shell: bash
@@ -32,4 +32,4 @@ jobs:
         sed -i "s#__PUSHOVER_USER__#$PUSHOVER_USER#g" ./pushover-config
         sed -i "s#__PUSHOVER_APP__#$PUSHOVER_APP#g" ./pushover-config
         sed -i "s#__PUSHOVER_DEVICE__#$PUSHOVER_DEVICE#g" ./pushover-config
-        ./pushover.sh -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Title -m Github Action Message
+        ./pushover.sh -T Github Action Config -m Github Action Message
