@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, permission-issue ]
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+    run_tests:
+        runs-on: ubuntu-20.04
+        steps:
+        - name: Git checkout
+          uses: actions/checkout@v3
+
+        - name: Script permissions
+          shell: bash
+          run: chmod +x ./pushover.sh
+            ./pushover.sh
+
+        - name: Run script
+          shell: bash
+          run: chmod +x ./pushover.sh
