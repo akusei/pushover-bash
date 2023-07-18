@@ -13,6 +13,22 @@ permissions:
 # TODO: Mock the actual call to pushover, instead of actually doing it.
 
 jobs:
+  run_fail:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Script permissions
+      shell: bash
+      run: chmod +x ./pushover.sh
+
+    - name: Run script expect fail
+      shell: bash
+      run: |
+        ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail
+        
+
   run_cli:
     runs-on: ubuntu-20.04
     steps:
