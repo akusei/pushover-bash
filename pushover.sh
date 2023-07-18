@@ -248,12 +248,12 @@ if [ -z "${attachment:-}" ]; then
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  result=curl -s ${HIDE_REPLY:+ -o /dev/null} \
+  curl ${HIDE_REPLY:+ -s -o /dev/null} \
     -H "Content-Type: application/json" \
     -d "${json}" \
     "${API_URL}" 2>&1
 else
-  result=curl -s ${HIDE_REPLY:+ -o /dev/null} \
+  curl ${HIDE_REPLY:+ -s -o /dev/null} \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
@@ -267,4 +267,6 @@ else
     "${API_URL}" 2>&1
 fi
 
-echo ${result}
+if [ -z "${HIDE_REPLY}" ]; then
+  echo $?
+fi
