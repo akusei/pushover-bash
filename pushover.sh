@@ -12,6 +12,7 @@ readonly USER_OVERRIDE_COMPOSER=${COMPOSER_ROOT_PATH}/${CONFIG_FILE}
 readonly EXPIRE_DEFAULT=180
 readonly RETRY_DEFAULT=30
 HIDE_REPLY=true
+debug=0
 
 showHelp()
 {
@@ -152,6 +153,11 @@ do
         monospace=1
         ;;
 
+      -D|--debug)
+        varname=''
+        debug=1
+        ;;
+
       -p|--priority)
         varname='priority'
         ;;
@@ -198,6 +204,9 @@ do
   # yes, i know eval is bad, but i'm not a bash guru.
   # if you have a better way, let me know.
   eval "${i}"='${myargs[$i]}'
+  if [ -n "${debug}" ]; then
+    echo "DEBUG: ${i} = ${myargs[$i]}"
+  fi
 done
 
 if [ ${priority:-0} -eq 2 ]; then
@@ -212,16 +221,26 @@ fi
 if [ -z "${api_token:-}" ]; then
   echo "-t|--token must be set"
   exit 1
+elif [ -n "${debug}" ]; then
+ echo "DEBUG: api_token: ${api_token}"
 fi
 
 if [ -z "${user_key:-}" ]; then
   echo "-u|--user must be set"
   exit 1
+elif [ -n "${debug}" ]; then
+ echo "DEBUG: user_key: ${user_key}"
 fi
 
 if [ -z "${message:-}" ]; then
   echo "-m|--message must be set"
   exit 1
+elif [ -n "${debug}" ]; then
+ echo "DEBUG: message: ${message}"
+fi
+
+if [ -n "${debug}" ]; then
+ echo "DEBUG: title: ${title}"
 fi
 
 if [ ! -z "${html:-}" ] && [ ! -z "${monospace:-}" ]; then
@@ -235,6 +254,9 @@ if [ ! -z "${attachment:-}" ] && [ ! -f "${attachment}" ]; then
 fi
 
 if [ -z "${attachment:-}" ]; then
+  if [ -n "${debug}" ]; then
+   echo "DEBUG: using attachment"
+  fi
   json="{\"token\":\"${api_token}\",\"user\":\"${user_key}\",\"message\":\"${message}\""
   if [ "${device:-}" ]; then json="${json},\"device\":\"${device}\""; fi
   if [ "${title:-}" ]; then json="${json},\"title\":\"${title}\""; fi
@@ -248,12 +270,15 @@ if [ -z "${attachment:-}" ]; then
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  curl ${HIDE_REPLY:+ -s -o /dev/null} \
+  curl -s ${HIDE_REPLY:+ -o /dev/null} \
     -H "Content-Type: application/json" \
     -d "${json}" \
     "${API_URL}" 2>&1
 else
-  curl ${HIDE_REPLY:+ -s -o /dev/null} \
+  if [ -n "${debug}" ]; then
+   echo "DEBUG: no attachment"
+  fi
+  curl -s ${HIDE_REPLY:+ -o /dev/null} \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
@@ -265,8 +290,4 @@ else
     ${device:+ --form-string "device=${device}"} \
     ${title:+ --form-string "title=${title}"} \
     "${API_URL}" 2>&1
-fi
-
-if [ -z "${HIDE_REPLY}" ]; then
-  echo $?
 fi
