@@ -266,3 +266,5 @@ else
     ${title:+ --form-string "title=${title}"} \
     "${API_URL}" 2>&1
 fi
+
+echo $?
