@@ -4,5 +4,5 @@ device=__PUSHOVER_DEVICE__
 url=
 url_title=
 priority=0
-title=Github Action Config
+title="Github Action Config"
 sound=
