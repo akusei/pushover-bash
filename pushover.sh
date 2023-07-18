@@ -66,6 +66,7 @@ showHelp()
         echo "                               updown - Up Down (long)"
         echo "                               none - None (silent)"
         echo "  -v,  --verbose             Return API execution reply to stdout"
+        echo "  -d,  --debug               Print out debugging information"
         echo
         echo "EXAMPLES:"
         echo
@@ -176,7 +177,7 @@ do
 
       -v|--verbose)
         varname=''
-        unset HIDE_REPLY
+        HIDE_REPLY=false
         ;;
 
       -h|--help)
@@ -203,9 +204,9 @@ for i in "${!myargs[@]}"
 do
   # yes, i know eval is bad, but i'm not a bash guru.
   # if you have a better way, let me know.
-  eval "${i}"='${myargs[$i]}'
+  eval "${i}"='$(echo ${myargs[$i]} | xargs)'
   if [ -n "${debug}" ]; then
-    echo "DEBUG: arg-> ${i} = ${myargs[$i]}"
+    echo "DEBUG: arg-> ${i}=$(echo ${myargs[$i]} | xargs)"
   fi
 done
 
@@ -222,25 +223,25 @@ if [ -z "${api_token:-}" ]; then
   echo "-t|--token must be set"
   exit 1
 elif [ -n "${debug}" ]; then
- echo "DEBUG: api_token: ${api_token}"
+ echo "DEBUG: api_token:${api_token}"
 fi
 
 if [ -z "${user_key:-}" ]; then
   echo "-u|--user must be set"
   exit 1
 elif [ -n "${debug}" ]; then
- echo "DEBUG: user_key: ${user_key}"
+ echo "DEBUG: user_key:${user_key}"
 fi
 
 if [ -z "${message:-}" ]; then
   echo "-m|--message must be set"
   exit 1
 elif [ -n "${debug}" ]; then
- echo "DEBUG: message: ${message}"
+ echo "DEBUG: message:${message}"
 fi
 
 if [ -n "${debug}" ]; then
- echo "DEBUG: title: ${title}"
+ echo "DEBUG: title:${title}"
 fi
 
 if [ ! -z "${html:-}" ] && [ ! -z "${monospace:-}" ]; then
@@ -270,15 +271,15 @@ if [ -z "${attachment:-}" ]; then
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  curl -s ${HIDE_REPLY:+ -o /dev/null} \
+  result=$(curl -s \
     -H "Content-Type: application/json" \
     -d "${json}" \
-    "${API_URL}" 2>&1
+    "${API_URL}" 2>&1)
 else
   if [ -n "${debug}" ]; then
    echo "DEBUG: no attachment"
   fi
-  curl -s ${HIDE_REPLY:+ -o /dev/null} \
+  result=$(curl -s \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
@@ -289,5 +290,15 @@ else
     ${sound:+ --form-string "sound=${sound}"} \
     ${device:+ --form-string "device=${device}"} \
     ${title:+ --form-string "title=${title}"} \
-    "${API_URL}" 2>&1
+    "${API_URL}" 2>&1)
 fi
+
+if [ !${HIDE_REPLY} ]; then
+  echo ${result}
+fi
+
+if echo ${result} | grep -q '"status":0,'; then
+  exit 2
+fi
+
+exit 0
