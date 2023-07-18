@@ -23,28 +23,31 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
   -e,  --expire SECONDS      Set expiration time for for notifications with priority 2 (default 180)
   -r,  --retry COUNT         Set retry period for notifications with priority 2 (default 30)
   -s,  --sound SOUND         Notification sound to play with message
-                               pushover - Pushover (default)
-                               bike - Bike
-                               bugle - Bugle
-                               cashregister - Cash Register
-                               classical - Classical
-                               cosmic - Cosmic
-                               falling - Falling
-                               gamelan - Gamelan
-                               incoming - Incoming
-                               intermission - Intermission
-                               magic - Magic
-                               mechanical - Mechanical
-                               pianobar - Piano Bar
-                               siren - Siren
-                               spacealarm - Space Alarm
-                               tugboat - Tug Boat
-                               alien - Alien Alarm (long)
-                               climb - Climb (long)
-                               persistent - Persistent (long)
-                               echo - Pushover Echo (long)
-                               updown - Up Down (long)
-                               none - None (silent)
+                                pushover - Pushover (default)
+                                bike - Bike
+                                bugle - Bugle
+                                cashregister - Cash Register
+                                classical - Classical
+                                cosmic - Cosmic
+                                falling - Falling
+                                gamelan - Gamelan
+                                incoming - Incoming
+                                intermission - Intermission
+                                magic - Magic
+                                mechanical - Mechanical
+                                pianobar - Piano Bar
+                                siren - Siren
+                                spacealarm - Space Alarm
+                                tugboat - Tug Boat
+                                alien - Alien Alarm (long)
+                                climb - Climb (long)
+                                persistent - Persistent (long)
+                                echo - Pushover Echo (long)
+                                updown - Up Down (long)
+                                none - None (silent)
+  -v,  --verbose             Return API execution reply to stdout
+  -d,  --debug               Print out debugging information
+                                WARNING, this will output your user key and token to stdout
 ```
 
 ## Configuration
