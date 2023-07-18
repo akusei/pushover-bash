@@ -300,7 +300,7 @@ fi
 
 # the resonse from pushover is a failure when the status is 0
 if echo ${response} | grep -q '"status":0,'; then
-  exit 2
+  exit 3
 fi
 
 exit 0
