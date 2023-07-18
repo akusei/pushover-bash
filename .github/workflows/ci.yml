@@ -20,11 +20,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Script permissions
-      shell: bash
       run: chmod +x ./pushover.sh
 
     - name: Run script expect fail
-      shell: bash
       run: |
         set +e
         ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail
@@ -37,11 +35,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Script permissions
-      shell: bash
       run: chmod +x ./pushover.sh
 
     - name: Run script with Args
-      shell: bash
       run: ./pushover.sh -v -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Args
 
   run_config:
@@ -51,11 +47,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Script permissions
-      shell: bash
       run: chmod +x ./pushover.sh
     
     - name: Run script from config
-      shell: bash
       run: |
         cp ./pushover-config-test ./pushover-config
         sed -i "s#__PUSHOVER_USER__#${{ secrets.PUSHOVER_USER }}#g" ./pushover-config
