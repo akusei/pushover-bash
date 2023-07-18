@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  run_tests:
+  run_cli:
     runs-on: ubuntu-20.04
     steps:
     - name: Git checkout
@@ -25,6 +25,16 @@ jobs:
       shell: bash
       run: ./pushover.sh -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Message
 
+  run_config:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Script permissions
+      shell: bash
+      run: chmod +x ./pushover.sh
+    
     - name: Run script from config
       shell: bash
       run: |

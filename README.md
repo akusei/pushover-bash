@@ -48,11 +48,12 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
 ```
 
 ## Configuration
-Configuration files can be placed in **/etc/pushover/pushover-config**, in the user's home directory at **$HOME/.pushover/pushover-config**, or in the root of this repository . The options are processed in order of importance for location. You can copy pushover-config-dist to pushover-config in any of these places.
+Configuration files can be placed in **/etc/pushover/pushover-config**, in the user's home directory at **$HOME/.pushover/pushover-config**, or in the root of this repository. The options are processed in order of importance for location. You can copy pushover-config-dist to pushover-config in any of these places.
 
 1) Options in /etc/pushover/pushover-config are processed first
 2) Options in $HOME/.pushover/pushover-config are processed next
-3) Command line arguments override all configuration values
+3) Options in ./pushover-config are processed next
+4) Command line arguments override all configuration values
 
 The default configuration is empty and contains the following:
 
@@ -90,7 +91,7 @@ title="title for specific user"
 For PHP Composer based projects, see [COMPOSER.md](COMPOSER.md)
 
 ## Examples
-Send a simple "This is a test" message to all devices using the stored configuration in either **/etc/default/pushover-config** or **$HOME/.pushover/pushover-config**
+Send a simple "This is a test" message to all devices using the stored configuration in either **/etc/default/pushover-config**, **$HOME/.pushover/pushover-config**, or **./pushover-config**
 
 ```
 pushover.sh -m "This is a test"
