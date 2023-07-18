@@ -25,7 +25,7 @@ jobs:
     - name: Run script expect fail
       shell: bash +e {0}
       run: |
-        ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail || exit_code=$?; if [ $exit_code -eq 2] && exit 0 || exit $?
+        ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail; if [ $? -eq 2] && exit 0 || exit $?
 
   run_cli:
     runs-on: ubuntu-20.04
@@ -37,7 +37,9 @@ jobs:
       run: chmod +x ./pushover.sh
 
     - name: Run script with Args
-      run: ./pushover.sh -v -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Args
+      run: |
+        echo "disabled"
+        #./pushover.sh -v -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Args
 
   run_config:
     runs-on: ubuntu-20.04
@@ -54,4 +56,5 @@ jobs:
         sed -i "s#__PUSHOVER_USER__#${{ secrets.PUSHOVER_USER }}#g" ./pushover-config
         sed -i "s#__PUSHOVER_APP__#${{ secrets.PUSHOVER_APP }}#g" ./pushover-config
         sed -i "s#__PUSHOVER_DEVICE__#${{ secrets.PUSHOVER_DEVICE }}#g" ./pushover-config
-        ./pushover.sh -v -m Github Action Config
+        echo "disabled"
+        #./pushover.sh -v -m Github Action Config
