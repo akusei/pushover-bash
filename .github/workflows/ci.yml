@@ -23,7 +23,7 @@ jobs:
 
     - name: Run script with Args
       shell: bash
-      run: ./pushover.sh -D -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Args
+      run: ./pushover.sh -D -v -t ${{ secrets.PUSHOVER_APP }} -u ${{ secrets.PUSHOVER_USER }} -d ${{ secrets.PUSHOVER_DEVICE }} -T Github Action Args -m Github Action Args
 
   run_config:
     runs-on: ubuntu-20.04
@@ -42,4 +42,5 @@ jobs:
         sed -i "s#__PUSHOVER_USER__#${{ secrets.PUSHOVER_USER }}#g" ./pushover-config
         sed -i "s#__PUSHOVER_APP__#${{ secrets.PUSHOVER_APP }}#g" ./pushover-config
         sed -i "s#__PUSHOVER_DEVICE__#${{ secrets.PUSHOVER_DEVICE }}#g" ./pushover-config
-        ./pushover.sh -D -T Github Action Config -m Github Action Config
+        cat ./pushover-config
+        ./pushover.sh -D -v -T Github Action Config -m Github Action Config
