@@ -25,8 +25,7 @@ jobs:
 
     - name: Run script expect fail
       shell: bash
-      run: |
-        ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail; if [ $? -eq 2]; then exit 0; fi
+      run: ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail; echo $?; if [ $? -eq 2 ]; then exit 0; fi
 
   run_cli:
     runs-on: ubuntu-20.04
