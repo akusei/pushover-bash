@@ -23,8 +23,8 @@ jobs:
       run: chmod +x ./pushover.sh
 
     - name: Run script expect fail
+      shell: bash +e
       run: |
-        set +e
         ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail
         if [ $? -eq 2] && exit 0 || exit 4
 
