@@ -205,7 +205,7 @@ do
   # if you have a better way, let me know.
   eval "${i}"='${myargs[$i]}'
   if [ -n "${debug}" ]; then
-    echo "DEBUG: ${i} = ${myargs[$i]}"
+    echo "DEBUG: arg-> ${i} = ${myargs[$i]}"
   fi
 done
 
