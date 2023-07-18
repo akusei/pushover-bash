@@ -11,7 +11,7 @@ readonly COMPOSER_ROOT_PATH=`realpath .`
 readonly USER_OVERRIDE_COMPOSER=${COMPOSER_ROOT_PATH}/${CONFIG_FILE}
 readonly EXPIRE_DEFAULT=180
 readonly RETRY_DEFAULT=30
-HIDE_REPLY=true
+HIDE_REPLY=1
 debug=0
 
 showHelp()
@@ -43,30 +43,31 @@ showHelp()
         echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default ${EXPIRE_DEFAULT})"
         echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default ${RETRY_DEFAULT})"
         echo "  -s,  --sound SOUND         Notification sound to play with message"
-        echo "                               pushover - Pushover (default)"
-        echo "                               bike - Bike"
-        echo "                               bugle - Bugle"
-        echo "                               cashregister - Cash Register"
-        echo "                               classical - Classical"
-        echo "                               cosmic - Cosmic"
-        echo "                               falling - Falling"
-        echo "                               gamelan - Gamelan"
-        echo "                               incoming - Incoming"
-        echo "                               intermission - Intermission"
-        echo "                               magic - Magic"
-        echo "                               mechanical - Mechanical"
-        echo "                               pianobar - Piano Bar"
-        echo "                               siren - Siren"
-        echo "                               spacealarm - Space Alarm"
-        echo "                               tugboat - Tug Boat"
-        echo "                               alien - Alien Alarm (long)"
-        echo "                               climb - Climb (long)"
-        echo "                               persistent - Persistent (long)"
-        echo "                               echo - Pushover Echo (long)"
-        echo "                               updown - Up Down (long)"
-        echo "                               none - None (silent)"
+        echo "                                pushover - Pushover (default)"
+        echo "                                bike - Bike"
+        echo "                                bugle - Bugle"
+        echo "                                cashregister - Cash Register"
+        echo "                                classical - Classical"
+        echo "                                cosmic - Cosmic"
+        echo "                                falling - Falling"
+        echo "                                gamelan - Gamelan"
+        echo "                                incoming - Incoming"
+        echo "                                intermission - Intermission"
+        echo "                                magic - Magic"
+        echo "                                mechanical - Mechanical"
+        echo "                                pianobar - Piano Bar"
+        echo "                                siren - Siren"
+        echo "                                spacealarm - Space Alarm"
+        echo "                                tugboat - Tug Boat"
+        echo "                                alien - Alien Alarm (long)"
+        echo "                                climb - Climb (long)"
+        echo "                                persistent - Persistent (long)"
+        echo "                                echo - Pushover Echo (long)"
+        echo "                                updown - Up Down (long)"
+        echo "                                none - None (silent)"
         echo "  -v,  --verbose             Return API execution reply to stdout"
         echo "  -d,  --debug               Print out debugging information"
+        echo "                                Warning, this will output your user key and token to stdout"
         echo
         echo "EXAMPLES:"
         echo
@@ -177,7 +178,7 @@ do
 
       -v|--verbose)
         varname=''
-        HIDE_REPLY=false
+        HIDE_REPLY=0
         ;;
 
       -h|--help)
@@ -205,7 +206,7 @@ do
   # yes, i know eval is bad, but i'm not a bash guru.
   # if you have a better way, let me know.
   eval "${i}"='$(echo ${myargs[$i]} | xargs)'
-  if [ -n "${debug}" ]; then
+  if [ ${debug} -eq 1 ]; then
     echo "DEBUG: arg-> ${i}=$(echo ${myargs[$i]} | xargs)"
   fi
 done
@@ -222,25 +223,25 @@ fi
 if [ -z "${api_token:-}" ]; then
   echo "-t|--token must be set"
   exit 1
-elif [ -n "${debug}" ]; then
+elif [ ${debug} -eq 1 ]; then
  echo "DEBUG: api_token:${api_token}"
 fi
 
 if [ -z "${user_key:-}" ]; then
   echo "-u|--user must be set"
   exit 1
-elif [ -n "${debug}" ]; then
+elif [ ${debug} -eq 1 ]; then
  echo "DEBUG: user_key:${user_key}"
 fi
 
 if [ -z "${message:-}" ]; then
   echo "-m|--message must be set"
   exit 1
-elif [ -n "${debug}" ]; then
+elif [ ${debug} -eq 1 ]; then
  echo "DEBUG: message:${message}"
 fi
 
-if [ -n "${debug}" ]; then
+if [ ${debug} -eq 1 ]; then
  echo "DEBUG: title:${title}"
 fi
 
@@ -255,7 +256,7 @@ if [ ! -z "${attachment:-}" ] && [ ! -f "${attachment}" ]; then
 fi
 
 if [ -z "${attachment:-}" ]; then
-  if [ -n "${debug}" ]; then
+  if [ ${debug} -eq 1 ]; then
    echo "DEBUG: using attachment"
   fi
   json="{\"token\":\"${api_token}\",\"user\":\"${user_key}\",\"message\":\"${message}\""
@@ -271,15 +272,15 @@ if [ -z "${attachment:-}" ]; then
   if [ "${sound:-}" ]; then json="${json},\"sound\":\"${sound}\""; fi
   json="${json}}"
 
-  result=$(curl -s \
+  response=$(curl -s \
     -H "Content-Type: application/json" \
     -d "${json}" \
     "${API_URL}" 2>&1)
 else
-  if [ -n "${debug}" ]; then
+  if [ ${debug} -eq 1 ]; then
    echo "DEBUG: no attachment"
   fi
-  result=$(curl -s \
+  response=$(curl -s \
     --form-string "token=${api_token}" \
     --form-string "user=${user_key}" \
     --form-string "message=${message}" \
@@ -293,11 +294,12 @@ else
     "${API_URL}" 2>&1)
 fi
 
-if [ !${HIDE_REPLY} ]; then
-  echo ${result}
+if [ ${HIDE_REPLY} -eq 0 ]; then
+  echo ${response}
 fi
 
-if echo ${result} | grep -q '"status":0,'; then
+# the resonse from pushover is a failure when the status is 0
+if echo ${response} | grep -q '"status":0,'; then
   exit 2
 fi
 
