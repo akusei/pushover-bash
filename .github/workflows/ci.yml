@@ -28,7 +28,7 @@ jobs:
       run: |
         set +e
         ./pushover.sh -v -t badtoken -u badkey -d baddevice -T Github Action Fail -m Github Action Fail
-        if [ $? -eq 2] && exit 0 || exit $?
+        if [ $? -eq 2] && exit 0 || exit 4
 
   run_cli:
     runs-on: ubuntu-20.04
