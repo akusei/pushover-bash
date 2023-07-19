@@ -11,7 +11,7 @@ In addition to the default configuration file locations, you can also create the
 /pushover-config
 ```
 
-You can add and call it as a script in your composer.json file like so:
+You can add it to your composer.json, and call it as a script like so:
 
 ```json
 {
@@ -22,6 +22,7 @@ You can add and call it as a script in your composer.json file like so:
 ```
 
 Then call it through composer like so:
+
 ```bash
 $composer pushover -- [script args]
 
