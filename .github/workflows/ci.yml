@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - '*'
+    paths:
+      - '!**.md' # Don't run the jobs if all we're updating is the markdown files.
 
 permissions:
   contents: read
