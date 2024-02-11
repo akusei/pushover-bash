@@ -19,7 +19,7 @@ showHelp()
         echo
         echo "NOTE: This script requires an account at http://www.pushover.net"
         echo
-        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <[-m|--message ]message> [options] [message]"
+        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <[-m|--message ]message> [options]"
         echo
         echo "  -t,  --token APIKEY        The pushover.net API Key for your application"
         echo "  -u,  --user USERKEY        Your pushover.net user key"
