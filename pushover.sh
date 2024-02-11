@@ -19,7 +19,7 @@ showHelp()
         echo
         echo "NOTE: This script requires an account at http://www.pushover.net"
         echo
-        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <-m|--message message> [options]"
+        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <[-m|--message ]message> [options] [message]"
         echo
         echo "  -t,  --token APIKEY        The pushover.net API Key for your application"
         echo "  -u,  --user USERKEY        Your pushover.net user key"
@@ -68,6 +68,9 @@ showHelp()
         echo
         echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\""
         echo "  Sends a simple \"This is a test\" message to all devices."
+        echo
+        echo "  ${script} \"This is a test\""
+        echo "  Sends a simple \"This is a test\" message with all other options being set through the configuration files."
         echo
         echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -T \"Test Title\""
         echo "  Sends a simple \"This is a test\" message with the title \"Test Title\" to all devices."
@@ -179,6 +182,7 @@ do
       ;;
 
     *)
+      message="${1:-}"
       ;;
   esac
 
