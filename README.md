@@ -90,7 +90,7 @@ title="title for specific user"
 Send a simple "This is a test" message to all devices using the stored configuration in either **/etc/default/pushover-config** or **$HOME/.pushover/pushover-config**
 
 ```
-pushover.sh -m "This is a test"
+pushover.sh "This is a test"
 ```
 
 Send a simple "This is a test" message to all devices using the specified API token and user key
